@@ -120,8 +120,9 @@ Here is a more complicated configuration showing most of the configuration optio
     :validate_url  => "https://cas.example.foo/proxyValidate",
     :username_session_key => :cas_user,
     :extra_attributes_session_key => :cas_extra_attributes,
+    :extra_attributes_filter => [:username, :email],
     :logger => cas_logger,
-    :enable_single_sign_out => true
+    :enable_single_sign_out => true,
     :service_url => "https://mysite.service.com"
   )
 
@@ -131,8 +132,9 @@ These values are automatically set to standard CAS defaults based on the given <
 The <tt>:username_session_key</tt> value determines the key under which you can find the CAS username in the Rails session hash.
 
 Any additional info that the CAS server might have supplied about the user during authentication will be found under the
-<tt>:extra_attributes_session_key</tt> value in the Rails session hash (i.e. given the above configuration, you would find this
-info under <tt>session[:cas_extra_attributes]</tt>).
+<tt>:extra_attributes_session_key</tt> value in the Rails session hash by default. When <tt>:extra_attributes_filter</tt> is
+defined then only the whitelisted attributes are retained in the session. Given the above configuration, you would find this info
+under <tt>session[:cas_extra_attributes]</tt> containing only the <tt>:username</tt> and <tt>:email</tt> attributes.
 
 An arbitrary Logger instance can be given as the :logger parameter. In the example above we log all CAS activity to a 
 <tt>log/cas.log</tt> file in your Rails app's directory.

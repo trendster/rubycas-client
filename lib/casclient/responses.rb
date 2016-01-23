@@ -75,6 +75,10 @@ module CASClient
           @extra_attributes.merge! name => inner_text
         end
 
+        if options[:extra_attributes_filter]
+          @extra_attributes.select! { |key, val| options[:extra_attributes_filter].map(&:to_s).include?(key.to_s) }
+        end
+
         # unserialize extra attributes
         @extra_attributes.each do |k, v|
           @extra_attributes[k] = parse_extra_attribute_value(v, options[:encode_extra_attributes_as])

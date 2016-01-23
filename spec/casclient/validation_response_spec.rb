@@ -145,4 +145,29 @@ RESPONSE_TEXT
       subject.extra_attributes.should == expected
     end
   end
+
+  context "When parsing extra attributes with filter" do
+    let(:response_text) do
+<<RESPONSE_TEXT
+<?xml version="1.0" encoding="UTF-8"?>
+<cas:serviceResponse xmlns:cas="http://www.yale.edu/tp/cas">
+  <cas:authenticationSuccess>
+    <cas:user>myuser</cas:user>
+    <cas:attribute name="username" value="myuser"/>
+    <cas:attribute name="name" value="My User"/>
+    <cas:attribute name="email" value="myuser@mail.example.com"/>
+  </cas:authenticationSuccess>
+</cas:serviceResponse>
+RESPONSE_TEXT
+    end
+
+    subject { CASClient::ValidationResponse.new response_text, :extra_attributes_filter => [:username, :email] }
+
+    it "only sets whitelisted attributes" do
+      expected = {"username" => "myuser", "email" => 'myuser@mail.example.com'}
+      subject.user.should == 'myuser'
+      subject.extra_attributes.should == expected
+    end
+  end
+
 end
